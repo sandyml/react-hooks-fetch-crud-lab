@@ -1,5 +1,7 @@
 import React from "react";
 
+// NOTE TO SELF: no need to change anything here 
+
 function AdminNavBar({ onChangePage }) {
   return (
     <nav>

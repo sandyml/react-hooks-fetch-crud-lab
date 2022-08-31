@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 
-function QuestionForm(props) {
+const baseURL = 'http://localhost:4000/questions';
+
+function QuestionForm({ addNewQuestion }) {
   const [formData, setFormData] = useState({
     prompt: "",
     answer1: "",
@@ -11,15 +13,40 @@ function QuestionForm(props) {
   });
 
   function handleChange(event) {
+    let change = event.target.value;
+    if (event.target.name === 'correctIndex') { // convert and change to number for CORRECTINDEX
+      change = parseInt(change);
+    }
+
     setFormData({
       ...formData,
-      [event.target.name]: event.target.value,
+      [event.target.name]: change,
     });
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(formData);
+    const newQuestionObj = {
+      prompt: formData.prompt,
+      answers: [
+        formData.answer1,
+        formData.answer2,
+        formData.answer3,
+        formData.answer4
+      ],
+      correctIndex: formData.correctIndex
+    };
+
+    // POST /questions
+    fetch(baseURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application.json"
+      },
+      body: JSON.stringify(newQuestionObj)
+    })
+    .then(response => response.json())
+    .then(data => addNewQuestion(data));
   }
 
   return (
